@@ -1,0 +1,20 @@
+# Build outputs
+build/
+*.o
+*.obj
+*.exe
+*.out
+
+# IDE files
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc

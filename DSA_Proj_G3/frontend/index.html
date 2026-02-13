@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Autocomplete & Spell-Checker Suite</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Animated Background Particles -->
+    <div class="particles" id="particles"></div>
+    
+    <!-- Dark Mode Toggle -->
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+        🌙
+    </button>
+    
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1 class="glow-text">🔍 Smart Autocomplete & Spell-Checker Suite</h1>
+            <p class="subtitle">Powered by Custom Data Structures</p>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Input Section -->
+            <section class="input-section">
+                <div class="mode-selector">
+                    <button class="mode-btn active" data-mode="autocomplete">
+                        Autocomplete
+                    </button>
+                    <button class="mode-btn" data-mode="spellcheck">
+                        Spell Check
+                    </button>
+                </div>
+
+                <div class="search-box">
+                    <input 
+                        type="text" 
+                        id="searchInput"
+                        id="wordInput"
+                        class="glow-input"
+                        placeholder="Type a sentence or word to search..." 
+                        autocomplete="off"
+                    >
+                    <button id="searchBtn" class="search-btn">Search</button>
+                    <div class="loading-spinner" id="loadingSpinner">Searching...</div>
+                </div>
+
+                <div class="query-info">
+                    <span id="queryMode">Mode: Autocomplete</span>
+                    <span id="queryTime">Time: -- ms</span>
+                </div>
+            </section>
+
+            <!-- Results Section -->
+            <section class="results-section">
+                <h2>Suggestions</h2>
+                <div id="resultsContainer" id="suggestionsContainer" class="results-container">
+                    <div class="placeholder">
+                        Start typing to see suggestions...
+                    </div>
+                </div>
+            </section>
+
+            <!-- Dictionary Panel -->
+            <section class="dictionary-section" id="dictionaryPanel">
+                <h2>📖 Dictionary</h2>
+                <div class="dictionary-placeholder">
+                    Select a word to see its details
+                </div>
+            </section>
+
+            <!-- Two Column Layout -->
+            <div class="two-column">
+                <!-- Visualization Panel -->
+                <section class="viz-section">
+                    <h2>🌳 Data Structure Visualization</h2>
+                    <div id="vizContainer" id="trieCanvas" class="viz-container">
+                        <svg id="trieSvg" width="100%" height="300"></svg>
+                        <div class="viz-placeholder">
+                            <p>Trie Traversal Animation</p>
+                            <p>Type to see the magic! ✨</p>
+                        </div>
+                    </div>
+                    <div class="ds-legend">
+                        <h3>Data Structures Used:</h3>
+                        <ul id="dsUsedList">
+                            <li>🌲 Trie - Prefix search (O(m))</li>
+                            <li>💾 LRU Cache - Query caching (O(1))</li>
+                            <li>📊 Priority Queue - Result ranking (O(k log n))</li>
+                            <li>🌸 Bloom Filter - Membership test (O(k))</li>
+                            <li>🌳 BK-Tree - Spell correction (O(log n))</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Analysis Panel -->
+                <section class="analysis-section" id="analysisPanel">
+                    <h2>Performance Analysis</h2>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-label">Query Time</div>
+                            <div class="stat-value" id="statTime">--</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Cache Hit</div>
+                            <div class="stat-value" id="statCache">--</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Results Found</div>
+                            <div class="stat-value" id="statCount">--</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Dictionary Size</div>
+                            <div class="stat-value" id="statDict">--</div>
+                        </div>
+                    </div>
+
+                    <div class="complexity-info">
+                        <h3>Time Complexity</h3>
+                        <ul>
+                            <li><strong>Trie Search:</strong> O(m) where m = prefix length</li>
+                            <li><strong>Cache Lookup:</strong> O(1)</li>
+                            <li><strong>BK-Tree Search:</strong> O(log n) average</li>
+                            <li><strong>Priority Queue:</strong> O(k log n) for top-k</li>
+                        </ul>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>DSA Project G3 | Built with C++ & Vanilla JS | 2025</p>
+            <p class="author-credit">💻 Developed by <strong>Gandharv Shinde</strong></p>
+        </footer>
+    </div>
+
+    <script src="app_simple.js"></script>
+    <style>
+        .error-message {
+            padding: 20px;
+            background: #ff4444;
+            color: white;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .spell-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .spell-word {
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+        .spell-indicator {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        .status-correct .spell-indicator {
+            background: #4CAF50;
+            color: white;
+        }
+        .status-incorrect .spell-indicator {
+            background: #f44336;
+            color: white;
+        }
+        .suggestions-header {
+            padding: 15px;
+            font-weight: 600;
+            color: #666;
+        }
+        .viz-placeholder {
+            text-align: center;
+            padding: 50px;
+            color: #999;
+        }
+        
+        /* Dictionary Panel Styles */
+        .dictionary-content {
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            color: white;
+        }
+        .dict-word {
+            font-size: 2em;
+            margin-bottom: 15px;
+            border-bottom: 2px solid rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+        .dict-details {
+            margin: 15px 0;
+            line-height: 1.8;
+        }
+        .dict-details p {
+            margin: 8px 0;
+        }
+        .dict-usage {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+        }
+        .dict-usage code {
+            display: block;
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+        .dictionary-placeholder {
+            padding: 40px;
+            text-align: center;
+            color: #999;
+            font-style: italic;
+        }
+        
+        /* Trie Visualization Styles */
+        .trie-visualization {
+            padding: 20px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 12px;
+            color: white;
+        }
+        .trie-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .trie-path {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .trie-node {
+            padding: 15px 20px;
+            border-radius: 50%;
+            font-weight: 600;
+            min-width: 60px;
+            text-align: center;
+            animation: nodeAppear 0.3s ease-out;
+        }
+        .trie-node.root {
+            background: #4CAF50;
+            color: white;
+        }
+        .trie-node.char {
+            background: white;
+            color: #f5576c;
+            font-size: 1.3em;
+        }
+        .trie-arrow {
+            font-size: 2em;
+            color: white;
+            animation: arrowSlide 0.5s ease-out;
+        }
+        .trie-info, .trie-complexity {
+            text-align: center;
+            margin: 10px 0;
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        @keyframes nodeAppear {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        @keyframes arrowSlide {
+            from {
+                transform: translateX(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</body>
+</html>
